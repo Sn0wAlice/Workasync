@@ -1,0 +1,9 @@
+{
+    "web": {
+        "port": 4000
+    },
+    "kind": "client",
+    "security": {
+        "key": "mysecretkey"
+    }
+}
