@@ -3,6 +3,11 @@
         "port": 3000
     },
     "kind": "default",
+    "socket": {
+        "remote_host": "127.0.0.1",
+        "remote_port": 3000,
+        "remote_protocol": "http"
+    },
     "security": {
         "key": "mysecretkey"
     }

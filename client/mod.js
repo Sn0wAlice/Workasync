@@ -10,7 +10,7 @@ module.exports = {
     start: async function(config) {
         console.log("[O] Starting Client")
 
-        const socket = io_client("http://localhost:3000");
+        const socket = io_client(`${config.socket.remote_protocol}://${config.socket.remote_host}:${config.socket.remote_port}`)
         
         // Handle connection
         socket.on("connect", () => {
