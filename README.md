@@ -21,11 +21,16 @@ npm install
 ```json
 {
     "web": {
-        "port": 4000
+        "port": 3000 // web server port
     },
-    "kind": "client",
+    "kind": "default", // "default" -> master node | "client" -> client node
+    "socket": {
+        "remote_host": "127.0.0.1", // master node host
+        "remote_port": 3000, // master node port
+        "remote_protocol": "http" // master node protocol
+    },
     "security": {
-        "key": "mysecretkey"
+        "key": "mysecretkey" // secret to allow connection from client to master
     }
 }
 ```
