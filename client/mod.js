@@ -1,6 +1,10 @@
 const io_client = require("socket.io-client");
 const fs = require("fs");
 
+// Docker
+const Docker = require('dockerode');
+const docker = new Docker();
+
 
 module.exports = {
     start: async function(config) {
@@ -42,7 +46,9 @@ module.exports = {
 
             socket.on("job", (data) => {
                 console.log("[/] I Have a new job!")
-                console.log(data)
+                if (data.job) {
+                    startjob(data.job, data.cmd);
+                }
             });
         });
         
@@ -51,5 +57,54 @@ module.exports = {
             console.log("[!] Disconnected from server");
             process.exit(0);
         });
+    }
+}
+
+
+
+async function startjob(job, cmd) {
+    console.log("[/] Starting Job " + job)
+    try {
+        await docker.pull(job);
+
+        // check if image exist
+        let found = false;
+        while (!found) {
+            let images = await docker.listImages();
+            for (let i of images) {
+                if (i.RepoTags.includes(job)) {
+                    found = true;
+                    break;
+                }
+            }
+            console.log(`[$] Currently pulling image ${job}`);
+            await new Promise(resolve => setTimeout(resolve, 3000));
+        }
+
+        const container = await docker.createContainer({
+            Image: job,
+            Cmd: cmd.split(' ').length > 1 ? cmd.split(' ') : [],
+        });
+        await container.start();
+        console.log(`[$] Container ${container.id} started`);
+
+        // wait for the container to shutdown
+        let dead = false;
+        while (!dead) {
+            let containers = await docker.listContainers();
+            let find = containers.find(c => c.Id === container.id);
+            if (!find) {
+                dead = true;
+            }
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+        console.log(`[$] Container ${container.id} stopped`);
+        // wait 1 second before removing the container
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        // delete container
+        await container.remove();
+        console.log(`[$] Container ${container.id} deleted`);
+    } catch (err) {
+        console.error('Error:', err);
     }
 }

@@ -450,7 +450,8 @@ module.exports = {
                 client_socket.socket.emit("job", {
                     job: j,
                     kal: body.kal,
-                    author: u.username
+                    author: u.username,
+                    cmd: body.cmd ? body.cmd : ""
                 });
 
                 all_client_used.push(job_server.server.client_key);

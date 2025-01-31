@@ -274,7 +274,8 @@ Start one or multiple jobs on random server matching the kal.
 ```json
 {
     "jobs": ["hello", "world"],
-    "kal": "tags.is:linux"
+    "kal": "tags.is:linux",
+    "cmd": "echo hello" // optional cmd passed to the docker
 }
 ```
 > this will start the job `hello` and job `world` on a server where the tag is `linux`
