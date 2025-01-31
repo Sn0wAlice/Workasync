@@ -3,9 +3,52 @@ const http = require("http");
 const user = require("../users.js");
 const f = require("../functions.js")
 
-function get_a_server(server_list, job) {
-    // for the lmoment, return random selected server
-    return server_list[Math.floor(Math.random() * server_list.length)];
+function get_a_server(server_list, kal, u) {
+    if (kal == undefined) {
+        kal = "*";
+    }
+    let parsed_kal = f.parse_kal(kal);
+    
+    let available_server = user.getUserClient(u.username);
+
+    for (const k in parsed_kal["name.is"]) {
+        available_server = available_server.filter((s) => { return s.name == parsed_kal["name.is"][k] });
+    }
+
+    for (const k in parsed_kal["tags.is"]) {
+        available_server = available_server.filter((s) => { return s.tags.includes(parsed_kal["tags.is"][k])});
+    }
+
+    for (const k in parsed_kal["name"]) {
+        available_server = available_server.filter((s) => { return s.name.includes(parsed_kal["name"][k]) });
+    }
+    for (const k in parsed_kal["tags"]) {
+        available_server = available_server.filter((s) => {  
+            for (const t in s.tags) { return s.tags[t].includes(parsed_kal["tags"][k]) }
+        });
+    }
+
+
+    let online_server = available_server.filter((s) => { return check_server_is_up(server_list, s.client_key) });
+
+    if (online_server.length > 0) {
+        return {
+            error: false,
+            server: online_server[Math.floor(Math.random() * online_server.length)]
+        }
+    } else if (available_server.length > 0) {
+        return {
+            error: true,
+            message: "No online server available, but there are servers available for this kal",
+            server: []
+        }
+    } else {
+        return {
+            error: true,
+            message: "No server available for this kal",
+            server: []
+        }
+    }
 }
 
 function auth_request(req) {
@@ -275,7 +318,14 @@ module.exports = {
         app.post("/api/jobs", express.json(), (req, res) => {
 
             let u = auth_request(req);
-            console.log(u);
+            
+            if (!u) {
+                res.send({
+                    error: true,
+                    message: "You are not allowed to access this resource"
+                });
+                return;
+            }
 
             // get body
             let body = req.body;
@@ -286,26 +336,54 @@ module.exports = {
                 })
                 return;
             }
-
-            let all = socket.getdb()
-            if (all.length == 0) {
+            if (!body.kal) {
                 res.send({
                     error: true,
-                    message: "No clients connected"
+                    message: "You need to provide a kal, check more: https://github.com/Sn0wAlice/Workasync"
                 })
-                return
+                return;
             }
 
+            let all_client_used = []
             for (const j of body.jobs) {
-                let job_server = get_a_server(all, j);
-                job_server.socket.emit("job", {
-                    job: j
+                let job_server = get_a_server(socket.getdb(), body.kal, u);
+                
+                if (job_server.error) {
+                    res.send({
+                        error: true,
+                        message: job_server.message
+                    });
+                    return;
+                } 
+
+                // get the socket of the client
+                let client_socket = socket.getdb().find((s) => {
+                    return s.uuid == job_server.server.client_key;
                 });
+                
+                if(!client_socket) {
+                    res.send({
+                        error: true,
+                        message: "Server not found"
+                    });
+                    return;
+                }
+
+                client_socket.socket.emit("job", {
+                    job: j,
+                    kal: body.kal,
+                    author: u.username
+                });
+
+                all_client_used.push(job_server.server.client_key);
             }
+
+            // filter duplicate
+            all_client_used = all_client_used.filter((v, i, a) => a.indexOf(v) === i);
 
             res.send({
                 error: false,
-                message: "Jobs sent to clients"
+                message: "Jobs sent to clients: [" + all_client_used.join(", ")+"]"
             })
         });
 

@@ -13,6 +13,41 @@ module.exports = {
         let names = JSON.parse(fs.readFileSync("./utils/names.json"));
         let random = Math.floor(Math.random() * names.length);
         let random2 = Math.floor(Math.random() * names.length);
-        return names[random] + " " + names[random2];
+        return names[random] + names[random2];
+    },
+
+
+    //////// KAL //////////
+    parse_kal: function(kal) {
+        let kal_list = kal.split(" ");
+        
+        let default_kal = {
+            "name": [],
+            "name.is": [],
+            "tags": [],
+            "tags.is": [],
+        }
+
+        for (let i = 0; i < kal_list.length; i++) {
+            let k = kal_list[i].split(":")[0];
+            switch (k) {
+                case "name":
+                    default_kal["name"].push(kal_list[i].split(":")[1]);
+                    break;
+                case "name.is":
+                    default_kal["name.is"].push(kal_list[i].split(":")[1]);
+                    break;
+                case "tags":
+                    default_kal["tags"].push(kal_list[i].split(":")[1]);
+                    break;
+                case "tags.is":
+                    default_kal["tags.is"].push(kal_list[i].split(":")[1]);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return default_kal
     }
 }

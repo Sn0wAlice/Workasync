@@ -33,6 +33,39 @@ npm install
 # Use
 Run the master node (kind: `default`) then plug client to it, and then you can push jobs to the master node API.
 
+### KAL Request lang
+KAL is the selectioner of the workasync. It's use to filter where you job can run. With the easy syntax, you can select the best node to run your job.
+
+#### Kal filter
+| Filter | Description | Example | Human | Match exemple |
+|--------|-------------|---------|-------|---------------|
+| `*` | Any node | `*` | Any node, can't be combined| any |
+| `name` | Node name | `name:alice` | Where name **includes** `alice` | `alice bob` will match, `bob patrick` will not |
+| `name.is` | Node name | `name:alice` | Where name **is** `alice` | `alice` will match, `alice bob` will not |
+| `tags` | Node name | `tags:linux` | Where tags **includes** `linux` | tag `linux-ubuntu` will match, `windows` will not |
+| `tags.is` | Node name | `tags.is:linux` | Where tags **is** `linux` | tag `linux` will match, `linux-ubuntu` will not |
+
+#### Kal example
+This will select the node where the name **includes** `alice`
+```
+name:alice
+```
+
+If you want to select the node where the name **includes** `alice` and the tag **is** `linux`
+```
+name:alice tags.is:linux
+```
+
+If you want to select the node where the name **is** `alice` and the tag **is** `linux`
+```
+name.is:alice tags.is:linux
+```
+
+> [!TIP]
+> Kal only support `AND` operator.
+
+
+
 ## Users
 
 When you start your server for the first time, you will be asked to create a `root` user and whill show you his token.
@@ -183,6 +216,21 @@ Get all the details of the server `serveruuid`.
 }
 ```
 
+### 5. Start a job
+**Endpoint:**
+`POST /api/jobs`
+
+**Description:**
+Start one or multiple jobs on random server matching the kal.
+
+**Request Example:**
+```json
+{
+    "jobs": ["hello", "world"],
+    "kal": "tags.is:linux"
+}
+```
+> this will start the job `hello` and job `world` on a server where the tag is `linux`
 
 
 </details>
