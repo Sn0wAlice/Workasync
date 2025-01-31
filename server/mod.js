@@ -5,7 +5,7 @@ const web = require("./web.js");
 
 module.exports = {
     start: async function(config) {
-        console.log("Starting Server")
+        console.log("[-] Starting web server and socket server")
 
         // Start all this
         let [app, server] = await web.init();

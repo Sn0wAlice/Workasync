@@ -3,13 +3,13 @@ const io_client = require("socket.io-client");
 
 module.exports = {
     start: async function(config) {
-        console.log("Starting Client")
+        console.log("[O] Starting Client")
 
         const socket = io_client("http://localhost:3000");
         
         // Handle connection
         socket.on("connect", () => {
-            console.log("Connected to server");
+            console.log("[O] Connected to server");
         
             // Send a message
             socket.emit("auth", {
@@ -18,18 +18,18 @@ module.exports = {
         
             // Listen for a response
             socket.on("message", (data) => {
-                console.log("Server:", data);
+                console.log("[O] Server:", data);
             });
 
             socket.on("job", (data) => {
-                console.log("I Have a new job!")
+                console.log("[/] I Have a new job!")
                 console.log(data)
             });
         });
         
         // Handle disconnection
         socket.on("disconnect", () => {
-            console.log("Disconnected from server");
+            console.log("[!] Disconnected from server");
             process.exit(0);
         });
     }

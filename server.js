@@ -1,6 +1,9 @@
 // All the imports
 const server = require("./server/mod.js");
 const client = require("./client/mod.js");
+const users = require("./users.js");
+
+const fs = require('fs');
 
 let default_config_path = "./config/default.json";
 
@@ -15,6 +18,8 @@ const config = require(default_config_path);
 
 
 async function main() {
+    console.log(fs.readFileSync("./utils/ascii.art", "utf8"))
+    users.init();
     // check the server role
     if(config.kind == "default") {
         // start the server
