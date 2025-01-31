@@ -110,5 +110,30 @@ module.exports = {
         // write the file
         fs.writeFileSync("./config/clients.json", JSON.stringify(clients));
         return true;
+    },
+
+    shareServer: function(server_key, share_with) {
+        // get all the clients
+        let clients = this.getClient();
+        // filter the client
+        clients = clients.filter(c => c.client_key == server_key);
+        if (clients.length == 0) {
+            return false;
+        }
+        // get the client
+        let client = clients[0];
+        // check if the client is already claimed
+        if (client.owner == undefined) {
+            return false;
+        }
+        // check if the client is already shared
+        if (client.shared.includes(share_with)) {
+            return false;
+        }
+        // share the client
+        client.shared.push(share_with);
+        // write the file
+        fs.writeFileSync("./config/clients.json", JSON.stringify(clients));
+        return true;
     }
 }

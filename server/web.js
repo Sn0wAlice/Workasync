@@ -149,6 +149,60 @@ module.exports = {
             });
         });
 
+        app.get("/api/clients/share/:serverid/:username", (req, res) => {
+            let u = auth_request(req);
+            if (!u) {
+                res.send({
+                    error: true,
+                    message: "You are not allowed to access this resource"
+                });
+                return;
+            }
+
+            let serverid = req.params.serverid;
+            let username = req.params.username;
+
+            let clients = user.getClient();
+            let server = clients.filter((s) => {
+                return s.client_key == serverid;
+            });
+            if (server.length == 0) {
+                res.send({
+                    error: true,
+                    message: "Server not found"
+                });
+                return;
+            }
+            server = server[0];
+            if (server.owner != u.username) {
+                res.send({
+                    error: true,
+                    message: "You are not the owner of this server"
+                });
+                return;
+            }
+
+            // check username exists
+            let users = user.getUsers();
+            let user_exists = users.filter((u) => {
+                return u.username == username;
+            })
+
+            if (user_exists.length == 0) {
+                res.send({
+                    error: true,
+                    message: "User not found"
+                });
+                return;
+            }
+
+            user.shareServer(serverid, username);
+            res.send({
+                error: false,
+                message: "Server shared"
+            });
+        });
+
         ///////////////////////// JOBS API //////////////////////////
         app.post("/api/jobs", express.json(), (req, res) => {
 

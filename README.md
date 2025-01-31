@@ -119,6 +119,20 @@ Will claim server `serveruuid` to the user. (use the key showed in client consol
 > [!NOTE]
 > You can only claim one time a server.
 
+### 2. Share server
+**Endpoint:**  
+`GET /api/clients/share/{serveruuid}/{username}`  
+
+**Description:**  
+Will share the acces to server `serveruuid` to the user `username`.
+
+**Response Example:**
+```json
+{
+    "error": false,
+    "message": "Server shared"
+}
+```
 
 
 </details>
