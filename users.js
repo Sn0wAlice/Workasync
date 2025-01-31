@@ -51,6 +51,15 @@ module.exports = {
         });
         // write the file
         fs.writeFileSync("./config/users.json", JSON.stringify(users));
+    },
+
+    deleteUser(username) {
+        // get all the users
+        let users = this.getUsers();
+        // filter the user
+        users = users.filter(u => u.username != username);
+        // write the file
+        fs.writeFileSync("./config/users.json", JSON.stringify(users));
     }
  
 }

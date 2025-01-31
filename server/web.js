@@ -33,11 +33,12 @@ module.exports = {
     },
     start: async function(config, app, server, socket) {
 
-        // Express Route
+        // A simple route to check if the server is running
         app.get("/", (req, res) => {
             res.send("Workasync instance is running");
         });
 
+        ///////////////////////// USERS API //////////////////////////
 
         app.get("/api/users/list", (req, res) => {
             let u = auth_request(req);
@@ -60,7 +61,6 @@ module.exports = {
             });
         });
 
-        // create user
         app.get("/api/users/create/:username", (req, res) => {
             let u = auth_request(req);
             if (!u || u.username != "root") {
@@ -86,7 +86,32 @@ module.exports = {
             });
         });
 
-        // json post request get "jobs" who is an array of string
+        app.get("/api/users/delete/:username", (req, res) => {
+            let u = auth_request(req);
+            if (!u || u.username != "root") {
+                res.send({
+                    error: true,
+                    message: "You are not allowed to access this resource"
+                });
+                return;
+            }
+            let username = req.params.username;
+            if (!username || username == "" || username == "root") {
+                res.send({
+                    error: true,
+                    message: "No username provided"
+                });
+                return;
+            }
+            user.deleteUser(username);
+            res.send({
+                error: false,
+                message: `User ${username} deleted`
+            });
+        });
+    
+
+        ///////////////////////// JOBS API //////////////////////////
         app.post("/api/jobs", express.json(), (req, res) => {
 
             let u = auth_request(req);
@@ -124,7 +149,8 @@ module.exports = {
             })
         });
 
-        // Start the server
+        
+        ///////////////////////// SERVER START //////////////////////////
         const PORT = config.web.port;
         server.listen(PORT, "0.0.0.0", () => {
             console.log(`[-] Web server is now running on port ${PORT}`);

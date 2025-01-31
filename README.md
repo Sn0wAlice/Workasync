@@ -54,7 +54,7 @@ Next, you will be able to create more users with the API. And you will be able t
 `GET /api/users/create/{username}`  
 
 **Description:**  
-Will create user named `alice` and will send you the auth token.
+Will create user named `username` and will send you the auth token.
 
 **Response Example:**
 ```json
@@ -79,6 +79,20 @@ Will send you the list with all users (except the auth token available in `./con
 }
 ```
 
+### 3. Delete a user
+**Endpoint:**  
+`GET /api/users/delete/{username}`  
+
+**Description:**  
+Will delete user named `username`.
+
+**Response Example:**
+```json
+{
+    "error": false,
+    "message": "User alice deleted"
+}
+```
 
 
 </details>
