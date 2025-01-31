@@ -314,6 +314,84 @@ module.exports = {
             });
         });
 
+        app.get("/api/clients/tags/:action/:tag/:serveruuid", (req, res) => {   
+            let u = auth_request(req);
+            if (!u) {
+                res.send({
+                    error: true,
+                    message: "You are not allowed to access this resource"
+                });
+                return;
+            }
+
+            let action = req.params.action;
+            let tag = req.params.tag;
+            let serveruuid = req.params.serveruuid;
+
+            let clients = user.getUserClient(u.username);
+            let server = clients.filter((s) => {
+                return s.client_key == serveruuid;
+            });
+            if (server.length == 0) {
+                res.send({
+                    error: true,
+                    message: "Server not found"
+                });
+                return;
+            }
+
+            if (action == "add") {
+                user.addTag(serveruuid, tag);
+                res.send({
+                    error: false,
+                    message: "Tag added"
+                });
+            } else if (action == "remove") {
+                user.removeTag(serveruuid, tag);
+                res.send({
+                    error: false,
+                    message: "Tag removed"
+                });
+            } else {
+                res.send({
+                    error: true,
+                    message: "Invalid action"
+                });
+            }
+        });
+
+        app.get("/api/clients/rename/:serveruuid/:newname", (req, res) => {
+            let u = auth_request(req);
+            if (!u) {
+                res.send({
+                    error: true,
+                    message: "You are not allowed to access this resource"
+                });
+                return;
+            }
+
+            let serveruuid = req.params.serveruuid;
+            let newname = req.params.newname;
+
+            let clients = user.getUserClient(u.username);
+            let server = clients.filter((s) => {
+                return s.client_key == serveruuid;
+            });
+            if (server.length == 0) {
+                res.send({
+                    error: true,
+                    message: "Server not found"
+                });
+                return;
+            }
+
+            user.renameServer(serveruuid, newname);
+            res.send({
+                error: false,
+                message: "Server renamed"
+            });
+        });
+
         ///////////////////////// JOBS API //////////////////////////
         app.post("/api/jobs", express.json(), (req, res) => {
 

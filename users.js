@@ -155,4 +155,63 @@ module.exports = {
             }
         });
     },
+
+    addTag: function(server_key, tag) {
+        // get all the clients
+        let clients = this.getClient();
+        // filter the client
+        clients = clients.filter(c => c.client_key == server_key);
+        if (clients.length == 0) {
+            return false;
+        }
+        // get the client
+        let client = clients[0];
+        // check if the tag is already added
+        if (client.tags.includes(tag)) {
+            return false;
+        }
+        // add the tag
+        client.tags.push(tag);
+        // write the file
+        fs.writeFileSync("./config/clients.json", JSON.stringify(clients));
+        return true;
+    },
+
+    removeTag: function(server_key, tag) {
+        // get all the clients
+        let clients = this.getClient();
+        // filter the client
+        clients = clients.filter(c => c.client_key == server_key);
+        if (clients.length == 0) {
+            return false;
+        }
+        // get the client
+        let client = clients[0];
+        // check if the tag is already added
+        if (!client.tags.includes(tag)) {
+            return false;
+        }
+        // remove the tag
+        client.tags = client.tags.filter(t => t != tag);
+        // write the file
+        fs.writeFileSync("./config/clients.json", JSON.stringify(clients));
+        return true;
+    },
+
+    renameServer: function(server_key, new_name) {
+        // get all the clients
+        let clients = this.getClient();
+        // filter the client
+        clients = clients.filter(c => c.client_key == server_key);
+        if (clients.length == 0) {
+            return false;
+        }
+        // get the client
+        let client = clients[0];
+        // set the new name
+        client.name = new_name;
+        // write the file
+        fs.writeFileSync("./config/clients.json", JSON.stringify(clients));
+        return true;
+    }
 }

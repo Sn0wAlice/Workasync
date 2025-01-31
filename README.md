@@ -216,7 +216,54 @@ Get all the details of the server `serveruuid`.
 }
 ```
 
-### 5. Start a job
+
+### 5. Manage Server tags
+**Endpoint:**  
+`GET /api/clients/tags/{action}/{tag}/{serveruuid}`
+
+**Description:**  
+Manage the tags of the server `serveruuid`. Action can be:
+- `add` to add a tag
+- `remove` to remove a tag
+
+**Response Example:**
+```json
+{
+    "error": false,
+    "message": "Tag removed"
+}
+
+{
+    "error": false,
+    "message": "Tag added"
+}
+```
+
+### 6. Manage Server name
+**Endpoint:**  
+`GET /api/clients/rename/{serveruuid}/{newname}`
+
+**Description:**  
+Rename the server `serveruuid` to `newname`.
+
+** !! DO NOT USE SPACE IN SERVER NAME !!**
+
+**Response Example:**
+```json
+{
+    "error": false,
+    "message": "Tag removed"
+}
+```
+
+</details>
+
+
+<details>
+  <summary>Jobs api endpoints (click to see more)</summary>
+
+
+### 1. Start a job
 **Endpoint:**
 `POST /api/jobs`
 
