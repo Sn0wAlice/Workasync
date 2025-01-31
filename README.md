@@ -134,5 +134,55 @@ Will share the acces to server `serveruuid` to the user `username`.
 }
 ```
 
+### 3. Get my server
+**Endpoint:**  
+`GET /api/clients/mine`
+
+**Description:**  
+Get all the server that you have `claimed` AND `shared`.
+
+**Response Example:**
+```json
+{
+    "error": false,
+    "clients": [
+        {
+            "client_key": "8ebefb55-e2b2-4043-b253-2f2027803a1f",
+            "name": "Christian Daphne",
+            "tags": [],
+            "shared": [
+                "root"
+            ],
+            "status": "online"
+        }
+    ]
+}
+```
+
+### 4. Get my server details
+**Endpoint:**  
+`GET /api/clients/show/{serveruuid}`
+
+**Description:**  
+Get all the details of the server `serveruuid`.
+
+**Response Example:**
+```json
+{
+    "error": false,
+    "server": {
+        "client_key": "8ebefb55-e2b2-4043-b253-2f2027803a1f",
+        "name": "Christian Daphne",
+        "shared": [
+            "root"
+        ],
+        "tags": [],
+        "owner": "alice",
+        "status": "offline"
+    }
+}
+```
+
+
 
 </details>

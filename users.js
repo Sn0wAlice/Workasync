@@ -85,8 +85,10 @@ module.exports = {
         clients.push({
             client_key: client_key,
             secret_key: secret_key,
+            name: f.genrate_fancy_name(),
             owner: undefined,
-            shared: []
+            shared: [],
+            tags: []
         });
         // write the file
         fs.writeFileSync("./config/clients.json", JSON.stringify(clients));
@@ -136,5 +138,21 @@ module.exports = {
         // write the file
         fs.writeFileSync("./config/clients.json", JSON.stringify(clients));
         return true;
-    }
+    },
+
+
+    getUserClient: function(username) {
+        // get all the clients
+        let clients = this.getClient();
+        // filter the client
+        clients = clients.filter(c => c.owner == username || c.shared.includes(username));
+        return clients.map(c => {
+            return {
+                client_key: c.client_key,
+                name: c.name,
+                tags: c.tags,
+                shared: c.shared,
+            }
+        });
+    },
 }

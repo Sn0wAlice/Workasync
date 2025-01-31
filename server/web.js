@@ -25,6 +25,10 @@ function auth_request(req) {
     return null;
 }
 
+function check_server_is_up(server_list, server_key) {
+    return (server_list.filter((s) => { return s.uuid == server_key })).length > 0
+}
+
 module.exports = {
     init: async function() {
         let app = express();
@@ -200,6 +204,70 @@ module.exports = {
             res.send({
                 error: false,
                 message: "Server shared"
+            });
+        });
+
+        app.get("/api/clients/mine", (req, res) => {
+            let u = auth_request(req);
+            if (!u) {
+                res.send({
+                    error: true,
+                    message: "You are not allowed to access this resource"
+                });
+                return;
+            }
+
+            let clients = user.getUserClient(u.username);
+            let uplist = socket.getdb()
+            for (let i = 0; i < clients.length; i++) {
+                clients[i].status = check_server_is_up(uplist, clients[i].client_key) ? "online" : "offline"
+            }
+
+            res.send({
+                error: false,
+                clients
+            });
+        });
+
+        app.get("/api/clients/show/:serveruuid", (req, res) => {
+            let u = auth_request(req);
+            if (!u) {
+                res.send({
+                    error: true,
+                    message: "You are not allowed to access this resource"
+                });
+                return;
+            }
+
+            let serveruuid = req.params.serveruuid;
+            let clients = user.getClient();
+            let server = clients.filter((s) => {
+                return s.client_key == serveruuid;
+            });
+            if (server.length == 0) {
+                res.send({
+                    error: true,
+                    message: "Server not found"
+                });
+                return;
+            }
+            server = server[0];
+            if (server.owner != u.username && server.shared_with.indexOf(u.username) == -1) {
+                res.send({
+                    error: true,
+                    message: "You are not the owner of this server"
+                });
+                return;
+            }
+
+            // cleanup server by removing secret_key
+            delete server.secret_key;
+
+            server.status = check_server_is_up(socket.getdb(), server.client_key) ? "online" : "offline"
+
+            res.send({
+                error: false,
+                server
             });
         });
 
