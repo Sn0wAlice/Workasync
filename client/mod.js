@@ -20,11 +20,17 @@ module.exports = {
             socket.on("message", (data) => {
                 console.log("Server:", data);
             });
+
+            socket.on("job", (data) => {
+                console.log("I Have a new job!")
+                console.log(data)
+            });
         });
         
         // Handle disconnection
         socket.on("disconnect", () => {
             console.log("Disconnected from server");
+            process.exit(0);
         });
     }
 }
