@@ -12,11 +12,13 @@ module.exports = {
             console.log("Connected to server");
         
             // Send a message
-            socket.emit("message", "Hello from client!");
+            socket.emit("auth", {
+                authkey: config.security.key
+            })
         
             // Listen for a response
-            socket.on("response", (data) => {
-                console.log("Server says:", data);
+            socket.on("message", (data) => {
+                console.log("Server:", data);
             });
         });
         
@@ -24,6 +26,5 @@ module.exports = {
         socket.on("disconnect", () => {
             console.log("Disconnected from server");
         });
-        
     }
 }

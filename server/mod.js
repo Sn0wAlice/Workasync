@@ -9,7 +9,7 @@ module.exports = {
 
         // Start all this
         let [app, server] = await web.init();
-        socket.startIo(server);
+        socket.startIo(server, config);
         web.start(config, app, server, socket.getIo());
     }
 }

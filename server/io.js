@@ -7,12 +7,19 @@ module.exports = {
         return io;
     },
 
-    startIo: function(server) {
+    startIo: function(server, config) {
         let io = new Server(server);
         console.log("Starting Socket.IO Server");
         // Socket.IO Connection
         io.on("connection", (socket) => {
             console.log("A user connected");
+
+            socket.on("auth", (msg) => {
+                if(msg.authkey == config.security.key) {
+                    socket.is_auth = true;
+                    socket.emit("message", "You are now authenticated");
+                }
+            });
 
             socket.on("message", (msg) => {
                 console.log("Message received: " + msg);
