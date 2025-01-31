@@ -4,6 +4,8 @@ const f = require('./functions.js');
 
 
 module.exports = {
+
+    ////////////////////////// USERS //////////////////////////
     getUsers: function() {
         // check if file ./config/users exists
         if (!fs.existsSync("./config/users.json")) {
@@ -60,6 +62,53 @@ module.exports = {
         users = users.filter(u => u.username != username);
         // write the file
         fs.writeFileSync("./config/users.json", JSON.stringify(users));
-    }
+    },
  
+    ////////////////////////// CLIENTS //////////////////////////
+    getClient: function() {
+        // check if file ./config/users exists
+        if (!fs.existsSync("./config/clients.json")) {
+            // if not, create it
+            fs.writeFileSync("./config/clients.json", JSON.stringify([]));
+        }
+
+        // read the file
+        let clients = fs.readFileSync("./config/clients.json");
+        // parse the file
+        return JSON.parse(clients);
+    },
+
+    createClient: function(client_key) {
+        // get all the clients
+        let clients = this.getClient();
+        // push the new client
+        clients.push({
+            client_key: client_key,
+            owner: undefined,
+            shared: []
+        });
+        // write the file
+        fs.writeFileSync("./config/clients.json", JSON.stringify(clients));
+    },
+
+    claimServer: function(username, server_key) {
+        // get all the clients
+        let clients = this.getClient();
+        // filter the client
+        clients = clients.filter(c => c.client_key == server_key);
+        if (clients.length == 0) {
+            return false;
+        }
+        // get the client
+        let client = clients[0];
+        // check if the client is already claimed
+        if (client.owner != undefined) {
+            return false;
+        }
+        // set the owner
+        client.owner = username;
+        // write the file
+        fs.writeFileSync("./config/clients.json", JSON.stringify(clients));
+        return true;
+    }
 }

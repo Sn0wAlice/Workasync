@@ -110,6 +110,44 @@ module.exports = {
             });
         });
     
+        ///////////////////////// CLIENT API //////////////////////////
+        app.get("/api/clients/claim/:serverid", (req, res) => {
+            let u = auth_request(req);
+            if (!u) {
+                res.send({
+                    error: true,
+                    message: "You are not allowed to access this resource"
+                });
+                return;
+            }
+
+            let serverid = req.params.serverid;
+            let all = socket.getdb();
+            let server = all.filter((s) => {
+                return s.uuid == serverid;
+            });
+            if (server.length == 0) {
+                res.send({
+                    error: true,
+                    message: "Server not found"
+                });
+                return;
+            }
+            server = server[0];
+            if (server.owner != undefined) {
+                res.send({
+                    error: true,
+                    message: "Server already claimed"
+                });
+                return;
+            }
+
+            user.claimServer(u.username, serverid);
+            res.send({
+                error: false,
+                message: "Server claimed"
+            });
+        });
 
         ///////////////////////// JOBS API //////////////////////////
         app.post("/api/jobs", express.json(), (req, res) => {

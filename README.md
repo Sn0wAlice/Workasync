@@ -96,3 +96,29 @@ Will delete user named `username`.
 
 
 </details>
+
+<details>
+  <summary>User api endpoints (click to see more)</summary>
+
+
+### 1. Claim server
+**Endpoint:**  
+`GET /api/clients/claim/{serveruuid}`  
+
+**Description:**  
+Will claim server `serveruuid` to the user. (use the key showed in client console)
+
+**Response Example:**
+```json
+{
+    "error": false,
+    "message": "Server claimed"
+}
+```
+
+> [!NOTE]
+> You can only claim one time a server.
+
+
+
+</details>

@@ -1,5 +1,6 @@
 const { Server } = require("socket.io");
 const f = require("../functions.js");
+const user = require("../users.js");
 let io = undefined;
 
 let client_db = [];
@@ -25,11 +26,12 @@ module.exports = {
                     let socket_uuid = f.generateUUUIDV4();
                     socket.is_auth = true;
                     socket.uuid = socket_uuid;
-                    socket.emit("message", "You are now authenticated");
+                    socket.emit("message", "You are now authenticated with token: " + socket_uuid);
                     client_db.push({
                         uuid: socket_uuid,
                         socket: socket
                     });
+                    user.createClient(socket_uuid);
                 }
             });
 
