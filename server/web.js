@@ -88,6 +88,9 @@ module.exports = {
         ///////////////////////// USERS API //////////////////////////
 
         app.get("/api/users/list", (req, res) => {
+
+            console.log("[@] /api/users/list");
+
             let u = auth_request(req);
             if (!u || u.username != "root") {
                 res.send({
@@ -109,6 +112,9 @@ module.exports = {
         });
 
         app.get("/api/users/create/:username", (req, res) => {
+
+            console.log("[@] /api/users/create/:username");
+
             let u = auth_request(req);
             if (!u || u.username != "root") {
                 res.send({
@@ -134,6 +140,9 @@ module.exports = {
         });
 
         app.get("/api/users/delete/:username", (req, res) => {
+
+            console.log("[@] /api/users/delete/:username");
+
             let u = auth_request(req);
             if (!u || u.username != "root") {
                 res.send({
@@ -159,6 +168,9 @@ module.exports = {
     
         ///////////////////////// CLIENT API //////////////////////////
         app.get("/api/clients/claim/:serverid", (req, res) => {
+
+            console.log("[@] /api/clients/claim/:serverid");
+
             let u = auth_request(req);
             if (!u) {
                 res.send({
@@ -197,6 +209,9 @@ module.exports = {
         });
 
         app.get("/api/clients/share/:serverid/:username", (req, res) => {
+
+            console.log("[@] /api/clients/share/:serverid/:username");
+
             let u = auth_request(req);
             if (!u) {
                 res.send({
@@ -251,6 +266,9 @@ module.exports = {
         });
 
         app.get("/api/clients/mine", (req, res) => {
+
+            console.log("[@] /api/clients/mine");
+
             let u = auth_request(req);
             if (!u) {
                 res.send({
@@ -273,6 +291,9 @@ module.exports = {
         });
 
         app.get("/api/clients/show/:serveruuid", (req, res) => {
+
+            console.log("[@] /api/clients/show/:serveruuid");
+
             let u = auth_request(req);
             if (!u) {
                 res.send({
@@ -315,6 +336,9 @@ module.exports = {
         });
 
         app.get("/api/clients/tags/:action/:tag/:serveruuid", (req, res) => {   
+
+            console.log("[@] /api/clients/tags/:action/:tag/:serveruuid");
+
             let u = auth_request(req);
             if (!u) {
                 res.send({
@@ -361,6 +385,9 @@ module.exports = {
         });
 
         app.get("/api/clients/rename/:serveruuid/:newname", (req, res) => {
+
+            console.log("[@] /api/clients/rename/:serveruuid/:newname");
+
             let u = auth_request(req);
             if (!u) {
                 res.send({
@@ -394,6 +421,8 @@ module.exports = {
 
         ///////////////////////// JOBS API //////////////////////////
         app.post("/api/jobs", express.json(), (req, res) => {
+
+            console.log("[@] /api/jobs");
 
             let u = auth_request(req);
             
