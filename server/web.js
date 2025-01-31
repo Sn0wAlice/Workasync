@@ -39,7 +39,7 @@ module.exports = {
         });
 
 
-        app.get("/users/list", (req, res) => {
+        app.get("/api/users/list", (req, res) => {
             let u = auth_request(req);
             if (!u || u.username != "root") {
                 res.send({
@@ -61,7 +61,7 @@ module.exports = {
         });
 
         // create user
-        app.get("/users/create/:username", (req, res) => {
+        app.get("/api/users/create/:username", (req, res) => {
             let u = auth_request(req);
             if (!u || u.username != "root") {
                 res.send({
@@ -87,7 +87,7 @@ module.exports = {
         });
 
         // json post request get "jobs" who is an array of string
-        app.post("/jobs", express.json(), (req, res) => {
+        app.post("/api/jobs", express.json(), (req, res) => {
 
             let u = auth_request(req);
             console.log(u);
