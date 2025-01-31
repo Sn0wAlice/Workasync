@@ -78,12 +78,13 @@ module.exports = {
         return JSON.parse(clients);
     },
 
-    createClient: function(client_key) {
+    createClient: function(client_key, secret_key) {
         // get all the clients
         let clients = this.getClient();
         // push the new client
         clients.push({
             client_key: client_key,
+            secret_key: secret_key,
             owner: undefined,
             shared: []
         });

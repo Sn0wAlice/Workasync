@@ -23,7 +23,27 @@ module.exports = {
 
             socket.on("auth", (msg) => {
                 if(msg.authkey == config.security.key) {
+                    let newclient = true
+                    if (msg.key && msg.secret) {
+                        let c = user.getClient();
+                        let check_client = c.filter((client) => {
+                            return client.client_key == msg.key && client.secret_key == msg.secret;
+                        })
+                        if (check_client.length == 1) {
+                            // check key
+                            let tmp_client = check_client[0];
+                            if (tmp_client.client_key == msg.key && tmp_client.secret_key == msg.secret) {
+                                newclient = false;
+                            }
+                        }
+                    }
+
                     let socket_uuid = f.generateUUUIDV4();
+
+                    if(!newclient) {
+                        socket_uuid = msg.key;
+                    }
+
                     socket.is_auth = true;
                     socket.uuid = socket_uuid;
                     socket.emit("message", "You are now authenticated with token: " + socket_uuid);
@@ -31,7 +51,15 @@ module.exports = {
                         uuid: socket_uuid,
                         socket: socket
                     });
-                    user.createClient(socket_uuid);
+                    
+                    if (newclient) {
+                        let secret_key = f.generateUUUIDV4();
+                        user.createClient(socket_uuid, secret_key);
+                        socket.emit("auth", {
+                            key: socket_uuid,
+                            secret: secret_key
+                        });
+                    }
                 }
             });
 
